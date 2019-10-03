@@ -27,6 +27,9 @@ for player in players:
 
 compareAllHands()
 
-players[0].discardAndDraw(deck)
+while True:
+    if players[0].discardAndDraw(deck) == False:
+        break
+
 players[0].showHand()
 

@@ -68,8 +68,27 @@ class Player:
         print("Total: " + str(self.handValue))
 
     def discardAndDraw(self,deck):
-        cardToDiscard = int(input("Which card would you like to drop? "))
-        self.handValue -= self.hand[(cardToDiscard-1)][0][1] 
-        self.hand.pop(cardToDiscard-1)
-        self.hand.append(deck.drawCard())
-        self.handValue += self.hand[(len(self.hand))-1][0][1] 
+        cardsToDiscard = input("Which card(s) would you like to drop? ").split(' ')
+        discardList = [int(card) for card in cardsToDiscard]
+        if len(discardList) == 1:
+            self.handValue -= self.hand[(discardList[0]-1)][0][1] 
+            self.hand.pop(discardList[0]-1)
+            self.hand.append(deck.drawCard())
+            self.handValue += self.hand[(len(self.hand))-1][0][1]
+            return False
+        elif len(discardList) > 1:
+            discardList.sort(reverse = True)
+            pairvalue = self.hand[(discardList[0]-1)][0][1]
+            for cardPosition in discardList:
+                if not (self.hand[cardPosition-1][0][1] == pairvalue):
+                    print("This is not a valid combo. Try again.")
+                    break
+                else:
+                    for cardPosition in discardList:
+                        self.handValue -= self.hand[cardPosition-1][0][1]
+                        self.hand.pop(cardPosition-1)
+                        
+            self.hand.append(deck.drawCard())
+            self.handValue += self.hand[(len(self.hand))-1][0][1]
+            return False
+            
