@@ -5,10 +5,10 @@ class Deck:
 
     def __init__(self):
         self.cards = []
-        self.createDeck()
+        self.create_deck()
 
-    def createDeck(self):
-        self.cardValues = [
+    def create_deck(self):
+        self.card_values = [
             ['A', 1], 
             ['2', 2], 
             ['3', 3],
@@ -27,18 +27,18 @@ class Deck:
         suits = ["\u2665", "\u2663", "\u2666", "\u2660"]
         
         self.cards = [
-            (cardValue, suit) 
-            for cardValue in self.cardValues 
+            (card_value, suit) 
+            for card_value in self.card_values 
             for suit in suits
             ]
     
-    def printDeck(self):
+    def print_deck(self):
         print(self.cards)
 
     def shuffle(self):
         random.shuffle(self.cards)
     
-    def drawCard(self):
+    def draw_card(self):
         return self.cards.pop()
         
         
@@ -55,7 +55,7 @@ class Discard_Pile:
     def __init__(self):
         self.cards = []
 
-    def printPile(self):
+    def print_pile(self):
         if len(self.cards) > 0: 
             print("Discard Pile: ", end = '') 
             for i in range(len(self.cards) ):
@@ -68,94 +68,94 @@ class Player:
     def __init__(self,name):
         self.name = name
         self.hand = []
-        self.handValue = 0
-        self.gameTotal = 0
+        self.hand_value = 0
+        self.game_total = 0
 
     def draw(self, deck):
-        self.hand.append(deck.drawCard())
-        self.handValue += self.hand[(len(self.hand))-1][0][1] 
+        self.hand.append(deck.draw_card())
+        self.hand_value += self.hand[(len(self.hand))-1][0][1] 
         return self
         
-    def showHand(self):
+    def show_hand(self):
         for i in range(len(self.hand)): 
             print(self.hand[i][0][0] + self.hand[i][1])
-        print("Total: " + str(self.handValue))
+        print("Total: " + str(self.hand_value))
 
-    def discardAndDraw(self,deck,discardPile):
-        invalidInput = True
-        discardPile.printPile()
-        self.showHand()
-        drawChoice = 1
+    def discard_and_draw(self,deck,discard_pile):
+        invalid_input = True
+        discard_pile.print_pile()
+        self.show_hand()
+        draw_choice = 1
         
-        while invalidInput:
+        while invalid_input:
             try:
-                cardsToDiscard = input("Which card(s) would you like to drop? ").split(' ')
-                discardList = [int(card) for card in cardsToDiscard]
-                invalidInput = False
+                cards_to_discard = input("Which card(s) would you like to drop? ").split(' ')
+                discard_list = [int(card) for card in cards_to_discard]
+                invalid_input = False
             except:
                 print("Enter a single number or multiple numbers seperated by a space.")
-                invalidInput = True
+                invalid_input = True
             
-            if len(discardPile.cards) > 0:
-                drawChoice = input("Would you like to draw from the deck(1) or pile(2)? ")
-                if int(drawChoice) == 2 and len(discardPile.cards) > 1:
-                    pileChoice = input("Which card in the pile? ")
+            if len(discard_pile.cards) > 0:
+                draw_choice = input("Would you like to draw from the deck(1) or pile(2)? ")
+                if int(draw_choice) == 2 and len(discard_pile.cards) > 1:
+                    pile_choice = input("Which card in the pile? ")
             
-        if len(discardList) == 1:
-            tempPile = discardPile.cards
-            self.handValue -= self.hand[(discardList[0])-1][0][1] 
-            discardPile.cards = []
-            discardPile.cards.append(self.hand.pop(discardList[0]-1))
-            print("Discard pile: " +discardPile.cards[0][0][0] + discardPile.cards[0][1])
-            if int(drawChoice) == 1:
-                self.hand.append(deck.drawCard())
+        if len(discard_list) == 1:
+            temp_pile = discard_pile.cards
+            self.hand_value -= self.hand[(discard_list[0])-1][0][1] 
+            discard_pile.cards = []
+            discard_pile.cards.append(self.hand.pop(discard_list[0]-1))
+            print("Discard pile: " +discard_pile.cards[0][0][0] + discard_pile.cards[0][1])
+            if int(draw_choice) == 1:
+                self.hand.append(deck.draw_card())
             else:
-                self.hand.append(tempPile[0])
-            self.handValue += self.hand[(len(self.hand))-1][0][1]
+                self.hand.append(temp_pile[0])
+            self.hand_value += self.hand[(len(self.hand))-1][0][1]
             return False
-        elif len(discardList) > 1:
-            dontDraw = False
-            discardList.sort(reverse = True)
-            faceValue = self.hand[(discardList[0]-1)][0][0]
-            suitValue = self.hand[(discardList[0]-1)][1]
-            if not all(self.hand[cardPosition-1][0][0] == faceValue 
-                       for cardPosition in discardList) and len(discardList) > 2:
-                if all(self.hand[cardPosition-1][1] == suitValue 
-                       for cardPosition in discardList):
-                    sortedDiscardFaces = [self.hand[i-1][0][0] for i in discardList]
-                    indexesOfFaces = []
-                    for subList in deck.cardValues:
-                        for face in sortedDiscardFaces:
-                            if face in subList:
-                                indexesOfFaces.append(deck.cardValues.index(subList))
-                    indexesOfFaces.sort()
+        elif len(discard_list) > 1:
+            dont_draw = False
+            discard_list.sort(reverse = True)
+            face_value = self.hand[(discard_list[0]-1)][0][0]
+            suit_value = self.hand[(discard_list[0]-1)][1]
+            if not all(self.hand[card_position-1][0][0] == face_value 
+                       for card_position in discard_list) and len(discard_list) > 2:
+                if all(self.hand[card_position-1][1] == suit_value 
+                       for card_position in discard_list):
+                    sorted_discard_faces = [self.hand[i-1][0][0] for i in discard_list]
+                    indexes_of_faces = []
+                    for sublist in deck.card_values:
+                        for face in sorted_discard_faces:
+                            if face in sublist:
+                                indexes_of_faces.append(deck.card_values.index(sublist))
+                    indexes_of_faces.sort()
                     x = 1
-                    for n in indexesOfFaces[:len(indexesOfFaces)-1]:
-                        if not(int(n + 1) == int(indexesOfFaces[x])):
-                                dontDraw = True
+                    for n in indexes_of_faces[:len(indexes_of_faces)-1]:
+                        if not(int(n + 1) == int(indexes_of_faces[x])):
+                                dont_draw = True
                         x += 1
                 else:
-                    dontDraw = True                    
-            elif all(self.hand[cardPosition-1][0][0] == faceValue 
-                       for cardPosition in discardList):
-                dontDraw = False
+                    dont_draw = True                    
+            elif all(self.hand[card_position-1][0][0] == face_value 
+                       for card_position in discard_list):
+                dont_draw = False
             else:
-                dontDraw = True 
-            if not dontDraw:            
-                tempPile = discardPile.cards[::]
-                discardPile.cards = []
-                for cardPosition in discardList:
-                    self.handValue -= self.hand[cardPosition-1][0][1]
-                    discardPile.cards.append(self.hand.pop(cardPosition-1))
+                dont_draw = True 
+            if not dont_draw:            
+                temp_pile = discard_pile.cards[::]
+                discard_pile.cards = []
+                for card_position in discard_list:
+                    self.hand_value -= self.hand[card_position-1][0][1]
+                    discard_pile.cards.append(self.hand.pop(card_position-1))
                     
-                discardPile.printPile()
-                if int(drawChoice) == 1:
-                    self.hand.append(deck.drawCard())
-                elif len(tempPile) == 1:
-                    self.hand.append(tempPile[0])
+                discard_pile.print_pile()
+                if int(draw_choice) == 1:
+                    self.hand.append(deck.draw_card())
+                elif len(temp_pile) == 1:
+                    self.hand.append(temp_pile[0])
                 else:
-                    self.hand.append(tempPile[int(pileChoice)])
-                self.handValue += self.hand[(len(self.hand))-1][0][1]
+                    self.hand.append(temp_pile[int(pile_choice)])
+                self.hand_value += self.hand[(len(self.hand))-1][0][1]
                 return False
             else:
                 print("This is not a valid combo. Try again.")

@@ -9,30 +9,30 @@ def compare_all_hands():
     for player_hands in players:
         print( '%s has a hand of: '%(player_hands.name))
         player_hands.showHand()
-        if player_hands.handValue < smallest_hand:
-            smallest_hand = player_hands.handValue
+        if player_hands.hand_value < smallest_hand:
+            smallest_hand = player_hands.hand_value
             winner = player_hands.name
     for player_ties in players:
-        if player_ties.handValue == smallest_hand:
+        if player_ties.hand_value == smallest_hand:
             tie_count += 1
     print(winner + " has the low hand with a total of " + str(smallest_hand))
     return [winner,tie_count]
     
 
 def determine_higest_score():
-    highestTotal = 0
+    highest_total = 0
     for player in players:
-        if player.gameTotal > highestTotal:
-            highestTotal = player.gameTotal
-    return highestTotal
+        if player.game_total > highest_total:
+            highest_total = player.game_total
+    return highest_total
 
 def intialize_new_round(players,deck):
-    deck.createDeck()
+    deck.create_deck()
     deck.shuffle()
-    discardPile.cards = []
+    discard_pile.cards = []
     for player in range(len(players)):
         players[player].hand = []
-        players[player].handValue = 0
+        players[player].hand_value = 0
         for i in range(5):
             players[player].draw(deck)
     print('\n~~~~~~~Start of a new round!~~~~~~~\n')
@@ -41,13 +41,13 @@ def intialize_new_round(players,deck):
 
 
 deck = deckOfCards.Deck()
-deck.createDeck()
+deck.create_deck()
 deck.shuffle()
 
-discardPile = deckOfCards.Discard_Pile()
+discard_pile = deckOfCards.Discard_Pile()
 
-playerNames = ['D', 'P', 'N']
-players = [deckOfCards.Player(playerName) for playerName in playerNames]
+player_names = ['D', 'P', 'N']
+players = [deckOfCards.Player(player_name) for player_name in player_names]
 
 
 for player in players:
@@ -56,55 +56,55 @@ for player in players:
 
 
 
-breakpointTotal = int(input("How many total points would you like to play up until: "))
-startingPosition = 0
-while determine_higest_score() < breakpointTotal:
+breakpoint_total = int(input("How many total points would you like to play up until: "))
+starting_position = 0
+while determine_higest_score() < breakpoint_total:
     intialize_new_round(players, deck)
-    roundOver = False
-    turnCounter = 0
-    while  not roundOver:
-        for player in range(startingPosition, len(players)):
-            if turnCounter % len(players) == 0:
-                print('\nStart of turn ' + str(turnCounter / len(players)+1))
-            turnCounter += 1
-            turnOver = False
-            while not turnOver:
+    round_over = False
+    turn_counter = 0
+    while  not round_over:
+        for player in range(starting_position, len(players)):
+            if turn_counter % len(players) == 0:
+                print('\nStart of turn ' + str(turn_counter / len(players)+1))
+            turn_counter += 1
+            turn_over = False
+            while not turn_over:
                 print('\nIt is ' + players[player].name + "'s turn.")
                 player_action = input("Call tonks('t') or draw('d') or show hand('s') or show scores('z'): ")
                 if player_action == 't': 
-                    startingPosition = player
-                    if turnCounter / len(players) + 1 > 0:
+                    starting_position = player
+                    if turn_counter / len(players) + 1 > 0:
                         winner = compare_all_hands()
                         if not (winner[0] == players[player].name) or winner[1] > 1:
                             for all_hands in range(len(players)):
-                                players[all_hands].handValue = 0
-                            players[player].handValue = 30
+                                players[all_hands].hand_value = 0
+                            players[player].hand_value = 30
                         else:
-                            players[player].handValue = 0
-                        turnOver = True
-                        roundOver = True
+                            players[player].hand_value = 0
+                        turn_over = True
+                        round_over = True
                     else:
                         print("You cannot call tonks before turn 4")
                     
                 elif player_action == 'd':
-                    while players[player].discardAndDraw(deck,discardPile) == True:
+                    while players[player].discard_and_draw(deck,discard_pile) == True:
                         pass
-                    turnOver = True
+                    turn_over = True
                 elif player_action == 's':
                     players[player].showHand()
                 elif player_action == 'z':
-                    for playerName in range(len(players)):
-                        print(players[playerName].name + ': ' 
-                        + str(players[playerName].gameTotal), end = ' || ')
+                    for player_name in range(len(players)):
+                        print(players[player_name].name + ': ' 
+                        + str(players[player_name].game_total), end = ' || ')
                 else:
                     print('Enter a valid option')
                     
-            if roundOver:
+            if round_over:
                 for player in players:
-                    player.gameTotal += player.handValue
+                    player.game_total += player.hand_value
                 break
-            startingPosition = 0
-    if determine_higest_score() >= breakpointTotal:
+            starting_position = 0
+    if determine_higest_score() >= breakpoint_total:
         print("Game Over")          
 
 
